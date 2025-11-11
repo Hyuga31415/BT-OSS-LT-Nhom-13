@@ -45,7 +45,7 @@ jobs:
         
         # Đường dẫn thư mục trên server Somee.
         # Thường là /httpdocs/ hoặc /wwwroot/ tùy vào cấu hình hosting của bạn.
-        server-directory: /nguyenquochuydh52200787.somee.com/BT_OSS_Nhom13/WebApplication1/wwwroot/
+        server-directory: /nguyenquochuydh52200787.somee.com/BT_OSS_Nhom13
         
         # Xóa các file cũ trên server. Thêm cờ này để đảm bảo chỉ có các file mới nhất được giữ lại.
         # Dùng 'true' nếu bạn muốn xóa các file không còn tồn tại trong thư mục 'publish'
