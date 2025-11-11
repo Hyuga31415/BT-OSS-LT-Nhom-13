@@ -1,0 +1,52 @@
+# Tên của Workflow
+name: Build and Deploy to Somee
+
+# Kích hoạt Workflow khi Push code lên nhánh main
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Cho phép chạy thủ công từ GitHub UI
+
+# Định nghĩa Job triển khai
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      # Thay '6.0.x' bằng phiên bản .NET bạn đang dùng (ví dụ: 4.8 cho MVC Framework cũ, hoặc 6.0/7.0/8.0 cho Core/MVC mới)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build and Publish
+      # Lệnh này biên dịch và gom tất cả file cần thiết vào thư mục 'publish'
+      # Lưu ý: Nếu bạn dùng .NET Framework (không phải .NET Core), lệnh này sẽ khác
+      run: dotnet publish --configuration Release --output ./publish
+
+    # --- Triển khai lên Somee qua FTP ---
+    - name: Deploy via FTP to Somee
+      # Sử dụng Action của SamKirkland để triển khai qua FTP/SFTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.0
+      with:
+        # Bạn PHẢI lưu các biến này dưới dạng Secrets trong cài đặt Repository GitHub của mình
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        
+        # Đường dẫn thư mục chứa các file đã Publish ở bước trước
+        local-dir: ./publish/
+        
+        # Đường dẫn thư mục trên server Somee.
+        # Thường là /httpdocs/ hoặc /wwwroot/ tùy vào cấu hình hosting của bạn.
+        server-directory: /httpdocs/ 
+        
+        # Xóa các file cũ trên server. Thêm cờ này để đảm bảo chỉ có các file mới nhất được giữ lại.
+        # Dùng 'true' nếu bạn muốn xóa các file không còn tồn tại trong thư mục 'publish'
+        delete-local: true
