@@ -1,0 +1,82 @@
+# Thư mục Visual Studio và các file tạm
+#################################
+*.user
+*.suo
+*.sln.docstates
+*.vspscc
+*.vssscc
+*.bak
+*.resharper
+*.dotSettings
+*.pidb
+*.vsworkspace
+
+# Thư mục giải pháp (Solution)
+## Bỏ qua thư mục .vs (được tạo bởi VS 2017/2019/2022)
+.vs/
+## Bỏ qua các file .sln
+!*.sln
+
+# Thư mục Binaries và Build
+#################################
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.pdb
+*.out
+*.exe
+*.dll
+*.ncb
+*.aps
+*.bsc
+*.sbr
+*.tlb
+*.tlh
+*.tmp
+*.log
+*.obj
+
+# Gói NuGet (Nếu bạn không dùng Git để theo dõi gói)
+#################################
+# Nếu bạn dùng PackageReference trong .csproj:
+# Không cần bỏ qua thư mục packages vì các gói được lưu trong cache toàn cục.
+
+# Nếu bạn dùng packages.config:
+## Thư mục chứa gói NuGet ở cấp Solution
+**/packages/
+# Trừ các file config
+!**/packages/*.config
+
+# Web/MVC
+#################################
+## File publish/deploy
+*.publishproj
+*.pubxml
+## Các gói web tạo ra khi deploy
+*.zip
+*.tar
+*.gz
+*.rar
+## Thư mục và file tạm
+_ReSharper.*/
+*.[Cc]ache
+*.[Ss]ervices
+*.[Ss]olutions
+*.webpublish
+
+# Thư mục Static Files
+#################################
+## Các thư mục được sinh ra từ các công cụ Frontend
+## Nếu bạn sử dụng npm/yarn/bower
+/node_modules/
+/bower_components/
+
+# Local SQL Server Files
+#################################
+*.mdf
+*.ldf
+
+# Local Test Results
+#################################
+TestResults/
