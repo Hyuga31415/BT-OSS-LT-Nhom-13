@@ -11,7 +11,7 @@ on:
 jobs:
   deploy:
     # Chạy trên môi trường Linux (nhanh hơn cho .NET Core)
-    runs-on: ubuntu-latest
+    runs-on: window-latest
     
     steps:
     - name: Checkout code
