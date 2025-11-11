@@ -1,5 +1,5 @@
 # Tên của Workflow
-name: Build and Deploy to Somee
+name: ASP.NET Core Deploy to Somee
 
 # Kích hoạt Workflow khi Push code lên nhánh main
 on:
@@ -10,14 +10,15 @@ on:
 # Định nghĩa Job triển khai
 jobs:
   deploy:
-    runs-on: window-latest
+    # Chạy trên môi trường Linux (nhanh hơn cho .NET Core)
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Setup .NET SDK
-      # Thay '6.0.x' bằng phiên bản .NET bạn đang dùng (ví dụ: 4.8 cho MVC Framework cũ, hoặc 6.0/7.0/8.0 cho Core/MVC mới)
+      # RẤT QUAN TRỌNG: Thay '8.0.x' bằng phiên bản .NET Core của bạn
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
@@ -26,27 +27,26 @@ jobs:
       run: dotnet restore
 
     - name: Build and Publish
-      # Lệnh này biên dịch và gom tất cả file cần thiết vào thư mục 'publish'
-      # Lưu ý: Nếu bạn dùng .NET Framework (không phải .NET Core), lệnh này sẽ khác
+      # Tạo ra thư mục 'publish' chứa các file đã biên dịch
       run: dotnet publish --configuration Release --output ./publish
-
-    # --- Triển khai lên Somee qua FTP ---
+      
+    # --- Triển khai lên Somee qua FTP/SFTP ---
     - name: Deploy via FTP to Somee
       # Sử dụng Action của SamKirkland để triển khai qua FTP/SFTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.0
       with:
-        # Bạn PHẢI lưu các biến này dưới dạng Secrets trong cài đặt Repository GitHub của mình
+        # Bạn PHẢI lưu các biến này dưới dạng Secrets trong GitHub (FTP_SERVER, FTP_USERNAME, FTP_PASSWORD)
         server: nguyenquochuydh52200787.somee.com
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         
-        # Đường dẫn thư mục chứa các file đã Publish ở bước trước
+        # Đường dẫn thư mục chứa các file đã Publish
         local-dir: ./publish/
         
-        # Đường dẫn thư mục trên server Somee.
-        # Thường là /httpdocs/ hoặc /wwwroot/ tùy vào cấu hình hosting của bạn.
-        server-directory: /nguyenquochuydh52200787.somee.com
+        # ĐƯỜNG DẪN TRÊN SERVER: Sử dụng đường dẫn tương đối từ thư mục gốc FTP
+        # Đường dẫn gốc thường là /httpdocs/ hoặc /wwwroot/
+        # Sau đó trỏ đến thư mục con của ứng dụng bạn đã tạo trên Somee.
+        server-directory: /	nguyenquochuydh52200787.somee.com/BT_OSS_Nhom13/ 
         
-        # Xóa các file cũ trên server. Thêm cờ này để đảm bảo chỉ có các file mới nhất được giữ lại.
-        # Dùng 'true' nếu bạn muốn xóa các file không còn tồn tại trong thư mục 'publish'
+        # Xóa các file cũ trên server để đảm bảo phiên bản mới nhất
         delete-local: true
